@@ -1,0 +1,6 @@
+deb [arch=armhf] http://ports.ubuntu.com/ bionic main universe
+deb [arch=armhf] http://ports.ubuntu.com/ bionic-backports main universe
+deb [arch=armhf] http://ports.ubuntu.com/ bionic-security main universe
+deb [arch=armhf] http://ports.ubuntu.com/ bionic-updates main universe
+
+
