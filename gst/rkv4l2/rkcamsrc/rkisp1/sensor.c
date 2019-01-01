@@ -142,7 +142,8 @@ int rkisp1_get_sensor_desc(int fd, rk_aiq_exposure_sensor_descriptor* sensor_des
     return 0;
 }
 
-int rkisp1_apply_sensor_params(int fd, rk_aiq_exposure_sensor_parameters* expParams)
+int rkisp1_apply_sensor_params(int fd, rk_aiq_exposure_sensor_parameters* expParams,
+    int manual_exposure)
 {
     struct v4l2_control ctrl;
     int ret;
@@ -161,12 +162,14 @@ int rkisp1_apply_sensor_params(int fd, rk_aiq_exposure_sensor_parameters* expPar
         ioctl(fd, VIDIOC_S_CTRL, &ctrl);
     }
 
-    memset(&ctrl, 0, sizeof(ctrl));
-    ctrl.id = V4L2_CID_EXPOSURE;
-    ctrl.value = expParams->coarse_integration_time;
-    ret = ioctl(fd, VIDIOC_S_CTRL, &ctrl);
-    if (ret < 0)
-        return -errno;
+    if (!manual_exposure) {
+        memset(&ctrl, 0, sizeof(ctrl));
+        ctrl.id = V4L2_CID_EXPOSURE;
+        ctrl.value = expParams->coarse_integration_time;
+        ret = ioctl(fd, VIDIOC_S_CTRL, &ctrl);
+        if (ret < 0)
+            return -errno;
+    }
 
     if (DEBUG) {
         printf("Sensor AEC: analog_gain_code_global: %d, digital_gain_global: %d, coarse_integration_time: %d\n",

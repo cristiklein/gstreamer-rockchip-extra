@@ -30,6 +30,8 @@
 #define AF_DISABLE_MODE 1
 /* enable af/awb/ae */
 #define AAA_ENABLE_MODE 2
+/* manual exposure, auto gain, auto white balance */
+#define AAA_MEAWB_MODE 3
 
 #define READY_STATUS 0
 #define RUN_STATUS 1

@@ -236,6 +236,8 @@ int rkisp1_3a_core_init(struct RKISP1Core* rkisp1_core, struct rkisp1_params* pa
     rkisp1_core->sensor_desc.isp_output_height = rkisp1_core->sensor_desc.sensor_output_height;
     rkisp1_core->stats_skip = STATS_SKIP;
 
+    rkisp1_core->manual_exposure = (params->mode == AAA_MEAWB_MODE);
+
     return ret;
 
 close_stats:
@@ -484,7 +486,7 @@ int rkisp1_3a_core_process_params(struct RKISP1Core* rkisp1_core)
     }
 
     /* apply sensor */
-    if (rkisp1_apply_sensor_params(rkisp1_core->sensor_fd, &rkisp1_core->aiq_results.aeResults.sensor_exposure)) {
+    if (rkisp1_apply_sensor_params(rkisp1_core->sensor_fd, &rkisp1_core->aiq_results.aeResults.sensor_exposure, rkisp1_core->manual_exposure)) {
         printf("RKISP1: failed to apply sensor params for %d %s.\n",
             errno, strerror(errno));
         return ret;
