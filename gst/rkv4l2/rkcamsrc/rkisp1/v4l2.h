@@ -61,6 +61,9 @@ struct RKISP1Core {
     int cur_frame_id;
     long long cur_time;
     int stats_skip;
+
+    /* user params */
+    int manual_exposure;
 };
 
 int rkisp1_3a_core_init(struct RKISP1Core* rkisp1_core, struct rkisp1_params* params);

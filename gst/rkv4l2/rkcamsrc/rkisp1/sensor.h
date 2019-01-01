@@ -24,6 +24,6 @@
 #include "rkisp1-lib.h"
 
 int rkisp1_get_sensor_desc(int fd, rk_aiq_exposure_sensor_descriptor* sensor_desc);
-int rkisp1_apply_sensor_params(int fd, rk_aiq_exposure_sensor_parameters* expParams);
+int rkisp1_apply_sensor_params(int fd, rk_aiq_exposure_sensor_parameters* expParams, int manual_exposure);
 
 #endif

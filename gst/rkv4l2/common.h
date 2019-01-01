@@ -53,6 +53,7 @@ typedef enum
   RK_3A_DISABLE = 0,
   RK_3A_AEAWB = 1,
   RK_3A_AEAWBAF = 2,
+  RK_3A_MEAWB = 3,
 } GstRk3AMode;
 G_END_DECLS
 

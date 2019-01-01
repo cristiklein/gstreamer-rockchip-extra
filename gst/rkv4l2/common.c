@@ -151,6 +151,7 @@ gst_rk_3a_mode_get_type (void)
       {RK_3A_DISABLE, "RK_3A_DISABLE", "0A"},
       {RK_3A_AEAWB, "RK_3A_AEAWB", "2A"},
       {RK_3A_AEAWBAF, "RK_3A_AEAWBAF", "3A"},
+      {RK_3A_MEAWB, "RK_3A_MEAWB", "1A"},
       {0, NULL, NULL}
     };
     rk_3a_mode = g_enum_register_static ("GstRk3AMode", modes_3a);
