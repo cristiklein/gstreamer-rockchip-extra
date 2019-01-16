@@ -35,7 +35,7 @@ static inline void rkisp1_stats_convertAWB(struct cifisp_awb_stat* awb_stats, rk
     }
 
     if (DEBUG)
-        printf("AwbStatDump: awb:mean:cnt(%d), awb:mean:y_or_g(%d), awb:mean:cb_or_b(%d), awb:mean:cr_or_r(%d)",
+        fprintf(stderr, "AwbStatDump: awb:mean:cnt(%d), awb:mean:y_or_g(%d), awb:mean:cb_or_b(%d), awb:mean:cr_or_r(%d)",
             awb_stats->awb_mean[0].cnt,
             awb_stats->awb_mean[0].mean_y_or_g,
             awb_stats->awb_mean[0].mean_cb_or_b,
@@ -51,7 +51,7 @@ static inline void rkisp1_stats_convertAE(struct cifisp_ae_stat* ae_stats, rk_ai
     }
 
     if (DEBUG)
-        printf("AecStatDump: exp_mean(%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d), bls_val(%d,%d,%d,%d)",
+        fprintf(stderr, "AecStatDump: exp_mean(%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d), bls_val(%d,%d,%d,%d)",
             ae_stats->exp_mean[0], ae_stats->exp_mean[1], ae_stats->exp_mean[2], ae_stats->exp_mean[3], ae_stats->exp_mean[4], ae_stats->exp_mean[5], ae_stats->exp_mean[6], ae_stats->exp_mean[7],
             ae_stats->exp_mean[8], ae_stats->exp_mean[9], ae_stats->exp_mean[10], ae_stats->exp_mean[11], ae_stats->exp_mean[12], ae_stats->exp_mean[13], ae_stats->exp_mean[14], ae_stats->exp_mean[15],
             ae_stats->exp_mean[16], ae_stats->exp_mean[17], ae_stats->exp_mean[18], ae_stats->exp_mean[19], ae_stats->exp_mean[20], ae_stats->exp_mean[21], ae_stats->exp_mean[22], ae_stats->exp_mean[23], ae_stats->exp_mean[24],
@@ -68,7 +68,7 @@ static inline void rkisp1_stats_convertAF(struct cifisp_af_stat* af_stats, rk_ai
     }
 
     if (DEBUG)
-        printf("AfStatDump: window[1] (%d, %d), window[2] (%d, %d), window[3] (%d, %d) ",
+        fprintf(stderr, "AfStatDump: window[1] (%d, %d), window[2] (%d, %d), window[3] (%d, %d) ",
             af_stats->window[0].sum, af_stats->window[0].lum,
             af_stats->window[1].sum, af_stats->window[1].lum,
             af_stats->window[2].sum, af_stats->window[2].lum);
@@ -83,7 +83,7 @@ static inline void rkisp1_stats_convertHIST(struct cifisp_hist_stat* hist_stats,
     }
 
     if (DEBUG)
-        printf("HistStatDump: hist_bins[%d-%d]: %d, %d, %d, %d, %d, %d, %d, %d",
+        fprintf(stderr, "HistStatDump: hist_bins[%d-%d]: %d, %d, %d, %d, %d, %d, %d, %d",
             i * 8, i * 8 + 7, hist_stats->hist_bins[i * 8], hist_stats->hist_bins[i * 8 + 1], hist_stats->hist_bins[i * 8 + 2],
             hist_stats->hist_bins[i * 8 + 3], hist_stats->hist_bins[i * 8 + 4], hist_stats->hist_bins[i * 8 + 5],
             hist_stats->hist_bins[i * 8 + 6], hist_stats->hist_bins[i * 8 + 7]);

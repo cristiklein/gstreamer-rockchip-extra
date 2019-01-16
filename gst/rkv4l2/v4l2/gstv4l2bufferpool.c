@@ -737,7 +737,7 @@ gst_v4l2_buffer_pool_start (GstBufferPool * bpool)
           V4L2_MEMORY_MMAP);
 
       /* first, lets request buffers, and see how many we can get: */
-      printf ("requesting %d MMAP buffers", count);
+      fprintf (stderr, "requesting %d MMAP buffers", count);
 
       if (count < GST_V4L2_MIN_BUFFERS) {
         min_buffers = count;
@@ -785,7 +785,7 @@ gst_v4l2_buffer_pool_start (GstBufferPool * bpool)
 
       can_allocate = GST_V4L2_ALLOCATOR_CAN_ALLOCATE (pool->vallocator, DMABUF);
       min_buffers = 1;
-      printf ("requesting %d DMABUF buffers", min_buffers);
+      fprintf (stderr, "requesting %d DMABUF buffers", min_buffers);
 
       count = gst_v4l2_allocator_start (pool->vallocator, min_buffers,
           V4L2_MEMORY_DMABUF);

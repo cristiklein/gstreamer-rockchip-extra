@@ -72,7 +72,7 @@ static int __reqs_buffer(int params_fd, int stats_fd)
 
     ret = ioctl(params_fd, VIDIOC_REQBUFS, &reqbuf);
     if (ret != 0) {
-        printf("RKISP1: failed to ioctl VIDIOC_REQBUFS for %d %s.\n", errno, strerror(errno));
+        fprintf(stderr, "RKISP1: failed to ioctl VIDIOC_REQBUFS for %d %s.\n", errno, strerror(errno));
         return -1;
     }
 
@@ -83,7 +83,7 @@ static int __reqs_buffer(int params_fd, int stats_fd)
 
     ret = ioctl(stats_fd, VIDIOC_REQBUFS, &reqbuf);
     if (ret != 0) {
-        printf("RKISP1: failed to ioctl VIDIOC_REQBUFS for %d %s.\n", errno, strerror(errno));
+        fprintf(stderr, "RKISP1: failed to ioctl VIDIOC_REQBUFS for %d %s.\n", errno, strerror(errno));
         return -1;
     }
 
@@ -104,7 +104,7 @@ static int __init_mmap(struct RKISP1Core* rkisp1_core)
 
         ret = ioctl(rkisp1_core->params_fd, VIDIOC_QUERYBUF, &buf);
         if (ret != 0) {
-            printf("RKISP1: failed to ioctl VIDIOC_QUERYBUF for %d %s.\n", errno, strerror(errno));
+            fprintf(stderr, "RKISP1: failed to ioctl VIDIOC_QUERYBUF for %d %s.\n", errno, strerror(errno));
             return -1;
         }
 
@@ -116,7 +116,7 @@ static int __init_mmap(struct RKISP1Core* rkisp1_core)
             rkisp1_core->params_fd, buf.m.offset);
 
         if (rkisp1_core->params_buf[n_buffers].start == MAP_FAILED) {
-            printf("RKISP1: failed to mmap. bufer.index %d.\n", buf.index);
+            fprintf(stderr, "RKISP1: failed to mmap. bufer.index %d.\n", buf.index);
             return -1;
         }
     }
@@ -131,7 +131,7 @@ static int __init_mmap(struct RKISP1Core* rkisp1_core)
 
         ret = ioctl(rkisp1_core->stats_fd, VIDIOC_QUERYBUF, &buf);
         if (ret != 0) {
-            printf("RKISP1: failed to ioctl VIDIOC_QUERYBUF for %d %s.\n", errno, strerror(errno));
+            fprintf(stderr, "RKISP1: failed to ioctl VIDIOC_QUERYBUF for %d %s.\n", errno, strerror(errno));
             return -1;
         }
 
@@ -144,7 +144,7 @@ static int __init_mmap(struct RKISP1Core* rkisp1_core)
         memset(rkisp1_core->stats_buf[n_buffers].start, 0, rkisp1_core->stats_buf[n_buffers].length);
 
         if (rkisp1_core->stats_buf[n_buffers].start == MAP_FAILED) {
-            printf("RKISP1: failed to mmap. bufer.index %d.\n", buf.index);
+            fprintf(stderr, "RKISP1: failed to mmap. bufer.index %d.\n", buf.index);
             return -1;
         }
     }
@@ -162,7 +162,7 @@ static int __subscribe_event(int isp_fd)
 
     ret = ioctl(isp_fd, VIDIOC_SUBSCRIBE_EVENT, &sub);
     if (ret != 0) {
-        printf("RKISP1: failed to ioctl VIDIOC_STREAMON for %d %s.\n",
+        fprintf(stderr, "RKISP1: failed to ioctl VIDIOC_STREAMON for %d %s.\n",
             errno, strerror(errno));
         return ret;
     }
@@ -176,56 +176,56 @@ int rkisp1_3a_core_init(struct RKISP1Core* rkisp1_core, struct rkisp1_params* pa
 
     rkisp1_core->isp_fd = open(params->isp_node, O_RDWR);
     if (rkisp1_core->isp_fd < 0) {
-        printf("RKISP1: Failed to open %s!\n", params->isp_node);
+        fprintf(stderr, "RKISP1: Failed to open %s!\n", params->isp_node);
         goto fail;
     }
 
     rkisp1_core->sensor_fd = open(params->sensor_node, O_RDWR);
     if (rkisp1_core->sensor_fd < 0) {
-        printf("RKISP1: Failed to open %s!\n", params->sensor_node);
+        fprintf(stderr, "RKISP1: Failed to open %s!\n", params->sensor_node);
         goto close_isp;
     }
 
     rkisp1_core->params_fd = open(params->params_node, O_RDWR);
     if (rkisp1_core->params_fd < 0) {
-        printf("RKISP1: Failed to open %s!\n", params->params_node);
+        fprintf(stderr, "RKISP1: Failed to open %s!\n", params->params_node);
         goto close_sensor;
     }
 
     rkisp1_core->stats_fd = open(params->stats_node, O_RDWR);
     if (rkisp1_core->stats_fd < 0) {
-        printf("RKISP1: Failed to open %s!\n", params->stats_node);
+        fprintf(stderr, "RKISP1: Failed to open %s!\n", params->stats_node);
         goto close_params;
     }
 
     if (__check_cap(rkisp1_core->params_fd, rkisp1_core->stats_fd)) {
-        printf("RKISP1: %s/%s is not rkisp1 params/stats!\n", params->params_node, params->stats_node);
+        fprintf(stderr, "RKISP1: %s/%s is not rkisp1 params/stats!\n", params->params_node, params->stats_node);
         goto close_stats;
     }
 
     if (__reqs_buffer(rkisp1_core->params_fd, rkisp1_core->stats_fd)) {
-        printf("RKISP1: failed to require buffers!\n");
+        fprintf(stderr, "RKISP1: failed to require buffers!\n");
         goto close_stats;
     }
 
     if (__init_mmap(rkisp1_core)) {
-        printf("RKISP1: failed to init buffers!\n");
+        fprintf(stderr, "RKISP1: failed to init buffers!\n");
         goto close_stats;
     }
 
     if (__subscribe_event(rkisp1_core->isp_fd)) {
-        printf("RKISP1: failed to subscribe v4l2 event!\n");
+        fprintf(stderr, "RKISP1: failed to subscribe v4l2 event!\n");
         goto close_stats;
     }
 
     rkisp1_core->mAiq = rk_aiq_init(params->xml_path);
     if (rkisp1_core->mAiq == NULL) {
-        printf("RKISP1: failed to init aiq!\n");
+        fprintf(stderr, "RKISP1: failed to init aiq!\n");
         goto close_stats;
     }
 
     if (rkisp1_get_sensor_desc(rkisp1_core->sensor_fd, &rkisp1_core->sensor_desc)) {
-        printf("RKISP1: failed to init sensor desc!\n");
+        fprintf(stderr, "RKISP1: failed to init sensor desc!\n");
         goto close_stats;
     }
 
@@ -277,7 +277,7 @@ int rkisp1_3a_core_streamon(struct RKISP1Core* rkisp1_core)
     type = V4L2_BUF_TYPE_META_OUTPUT;
     ret = ioctl(rkisp1_core->params_fd, VIDIOC_STREAMON, &type);
     if (ret != 0) {
-        printf("RKISP1: failed to ioctl VIDIOC_STREAMON for %d %s.\n",
+        fprintf(stderr, "RKISP1: failed to ioctl VIDIOC_STREAMON for %d %s.\n",
             errno, strerror(errno));
         return ret;
     }
@@ -292,14 +292,14 @@ int rkisp1_3a_core_streamon(struct RKISP1Core* rkisp1_core)
 
         ret = ioctl(rkisp1_core->stats_fd, VIDIOC_QBUF, &buf);
         if (ret != 0)
-            printf("RKISP1: failed to ioctl VIDIOC_QBUF for %d %s.\n",
+            fprintf(stderr, "RKISP1: failed to ioctl VIDIOC_QBUF for %d %s.\n",
                 errno, strerror(errno));
     }
 
     type = V4L2_BUF_TYPE_META_CAPTURE;
     ret = ioctl(rkisp1_core->stats_fd, VIDIOC_STREAMON, &type);
     if (ret != 0) {
-        printf("RKISP1: failed to ioctl VIDIOC_STREAMON for %d %s.\n",
+        fprintf(stderr, "RKISP1: failed to ioctl VIDIOC_STREAMON for %d %s.\n",
             errno, strerror(errno));
         return ret;
     }
@@ -315,7 +315,7 @@ int rkisp1_3a_core_streamoff(struct RKISP1Core* rkisp1_core)
     type = V4L2_BUF_TYPE_META_OUTPUT;
     ret = ioctl(rkisp1_core->params_fd, VIDIOC_STREAMOFF, &type);
     if (ret != 0) {
-        printf("RKISP1: failed to ioctl VIDIOC_STREAMON for %d %s.\n",
+        fprintf(stderr, "RKISP1: failed to ioctl VIDIOC_STREAMON for %d %s.\n",
             errno, strerror(errno));
         return ret;
     }
@@ -323,7 +323,7 @@ int rkisp1_3a_core_streamoff(struct RKISP1Core* rkisp1_core)
     type = V4L2_BUF_TYPE_META_CAPTURE;
     ret = ioctl(rkisp1_core->stats_fd, VIDIOC_STREAMOFF, &type);
     if (ret != 0) {
-        printf("RKISP1: failed to ioctl VIDIOC_STREAMON for %d %s.\n",
+        fprintf(stderr, "RKISP1: failed to ioctl VIDIOC_STREAMON for %d %s.\n",
             errno, strerror(errno));
         return ret;
     }
@@ -367,7 +367,7 @@ redequeue:
     buf.memory = V4L2_MEMORY_MMAP;
     ret = ioctl(rkisp1_core->stats_fd, VIDIOC_DQBUF, &buf);
     if (ret != 0) {
-        printf("RKISP1: failed to ioctl VIDIOC_DQBUF for %d %s.\n",
+        fprintf(stderr, "RKISP1: failed to ioctl VIDIOC_DQBUF for %d %s.\n",
             errno, strerror(errno));
         return ret;
     }
@@ -375,7 +375,7 @@ redequeue:
     rkisp1_core->cur_frame_id = buf.sequence;
     rkisp1_core->cur_time = buf.timestamp.tv_sec * 1000 * 1000 * 1000 + buf.timestamp.tv_usec * 1000;
     if (DEBUG)
-        printf("stats buf.sequence: %d, time: %lld\n", rkisp1_core->cur_frame_id, rkisp1_core->cur_time);
+        fprintf(stderr, "stats buf.sequence: %d, time: %lld\n", rkisp1_core->cur_frame_id, rkisp1_core->cur_time);
 
     isp_stats = (struct rkisp1_stat_buffer*)rkisp1_core->stats_buf[buf.index].start;
     ispStatistics.ae_results = &rkisp1_core->aiq_results.aeResults;
@@ -388,7 +388,7 @@ redequeue:
 
     ret = ioctl(rkisp1_core->stats_fd, VIDIOC_QBUF, &buf);
     if (ret != 0) {
-        printf("RKISP1: failed to ioctl VIDIOC_QBUF for %d %s.\n",
+        fprintf(stderr, "RKISP1: failed to ioctl VIDIOC_QBUF for %d %s.\n",
             errno, strerror(errno));
         return ret;
     }
@@ -401,7 +401,7 @@ rewait:
         */
         ret = ioctl(rkisp1_core->isp_fd, VIDIOC_DQEVENT, &ev);
         if (ret != 0) {
-            printf("RKISP1: failed to ioctl VIDIOC_STREAMON for %d %s.\n",
+            fprintf(stderr, "RKISP1: failed to ioctl VIDIOC_STREAMON for %d %s.\n",
                 errno, strerror(errno));
             return ret;
         }
@@ -411,17 +411,17 @@ rewait:
     sof_time = ev.timestamp.tv_sec * 1000 * 1000 * 1000 + ev.timestamp.tv_nsec;
 
     if (DEBUG)
-        printf("Start of Frame, sequence: %d, timestamp: %lld\n", sequence, sof_time);
+        fprintf(stderr, "Start of Frame, sequence: %d, timestamp: %lld\n", sequence, sof_time);
 
     if (sequence < rkisp1_core->cur_frame_id + 1) {
         sequence = 0;
         goto rewait;
     } else if (sequence > rkisp1_core->cur_frame_id + 1) {
-        printf("RKISP1: Broken frame, so skip it %d\n", rkisp1_core->cur_frame_id);
+        fprintf(stderr, "RKISP1: Broken frame, so skip it %d\n", rkisp1_core->cur_frame_id);
         goto redequeue;
     } else if ( rkisp1_core->cur_time - sof_time > 10 * 1000 * 1000) {
         /* TODO: use fram rate, current fixed 10ms */
-        printf("RKISP1: Measurement late %lld, so skip frame %d\n",
+        fprintf(stderr, "RKISP1: Measurement late %lld, so skip frame %d\n",
             sof_time - rkisp1_core->cur_time, rkisp1_core->cur_frame_id);
         return -EAGAIN;
     }
@@ -465,7 +465,7 @@ int rkisp1_3a_core_process_params(struct RKISP1Core* rkisp1_core)
 
     sequence = buf.sequence;
     if (DEBUG)
-        printf("params buf.sequence: %d\n", sequence);
+        fprintf(stderr, "params buf.sequence: %d\n", sequence);
 
     isp_params = (struct rkisp1_isp_params_cfg*)rkisp1_core->params_buf[buf.index].start;
     memset(isp_params, 0, sizeof(struct rkisp1_isp_params_cfg));
@@ -480,14 +480,14 @@ int rkisp1_3a_core_process_params(struct RKISP1Core* rkisp1_core)
     buf.index = 0;
     ret = ioctl(rkisp1_core->params_fd, VIDIOC_QBUF, &buf);
     if (ret != 0) {
-        printf("RKISP1: failed to ioctl VIDIOC_QBUF for %d %s.\n",
+        fprintf(stderr, "RKISP1: failed to ioctl VIDIOC_QBUF for %d %s.\n",
             errno, strerror(errno));
         return ret;
     }
 
     /* apply sensor */
     if (rkisp1_apply_sensor_params(rkisp1_core->sensor_fd, &rkisp1_core->aiq_results.aeResults.sensor_exposure, rkisp1_core->manual_exposure)) {
-        printf("RKISP1: failed to apply sensor params for %d %s.\n",
+        fprintf(stderr, "RKISP1: failed to apply sensor params for %d %s.\n",
             errno, strerror(errno));
         return ret;
     }
@@ -496,7 +496,7 @@ int rkisp1_3a_core_process_params(struct RKISP1Core* rkisp1_core)
     /* wait params done */
     ret = ioctl(rkisp1_core->params_fd, VIDIOC_DQBUF, &buf);
     if (ret != 0) {
-        printf("RKISP1: failed to ioctl VIDIOC_DQBUF for %d %s.\n",
+        fprintf(stderr, "RKISP1: failed to ioctl VIDIOC_DQBUF for %d %s.\n",
             errno, strerror(errno));
         return ret;
     }
@@ -542,7 +542,7 @@ void rkisp1_3a_core_run_ae(struct RKISP1Core* rkisp1_core)
 
     status = rk_aiq_ae_run(rkisp1_core->mAiq, &aeInputParams, &results);
     if (status)
-        printf("RKISP1: Error running AE %d", status);
+        fprintf(stderr, "RKISP1: Error running AE %d", status);
 
     rkisp1_core->aiq_results.aeResults = results;
 }
@@ -562,7 +562,7 @@ void rkisp1_3a_core_run_awb(struct RKISP1Core* rkisp1_core)
 
     status = rk_aiq_awb_run(rkisp1_core->mAiq, &awbInputParams, &results);
     if (status)
-        printf("RKISP1: Error running AWB %d", status);
+        fprintf(stderr, "RKISP1: Error running AWB %d", status);
 
     rkisp1_core->aiq_results.awbResults = results;
 }
@@ -578,7 +578,7 @@ void rkisp1_3a_core_run_misc(struct RKISP1Core* rkisp1_core)
 
     status = rk_aiq_misc_run(rkisp1_core->mAiq, &miscInputParams, &results);
     if (status)
-        printf("RKISP1: Error running MISC %d", status);
+        fprintf(stderr, "RKISP1: Error running MISC %d", status);
 
     rkisp1_core->aiq_results.miscIspResults = results;
 }
@@ -595,5 +595,5 @@ void rkisp1_3a_core_run_af(struct RKISP1Core* rkisp1_core)
 
     status = rk_aiq_af_run(rkisp1_core->mAiq, &afInputParams, &results);
     if (status)
-        printf("RKISP1: Error running AF %d", status);
+        fprintf(stderr, "RKISP1: Error running AF %d", status);
 }

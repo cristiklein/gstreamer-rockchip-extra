@@ -172,7 +172,7 @@ int rkisp1_apply_sensor_params(int fd, rk_aiq_exposure_sensor_parameters* expPar
     }
 
     if (DEBUG) {
-        printf("Sensor AEC: analog_gain_code_global: %d, digital_gain_global: %d, coarse_integration_time: %d\n",
+        fprintf(stderr, "Sensor AEC: analog_gain_code_global: %d, digital_gain_global: %d, coarse_integration_time: %d\n",
             expParams->analog_gain_code_global, expParams->digital_gain_global, expParams->coarse_integration_time);
     }
 

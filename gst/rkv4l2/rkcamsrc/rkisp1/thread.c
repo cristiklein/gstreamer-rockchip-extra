@@ -46,7 +46,7 @@ struct RKISP1Thread* RKISP1_3A_THREAD_CREATE(struct rkisp1_params* params)
 
     err = rkisp1_3a_core_init(rkisp1_thread->rkisp1_core, params);
     if (err) {
-        printf("RKISP1: can't init rk-3a-core: %s\n", strerror(err));
+        fprintf(stderr, "RKISP1: can't init rk-3a-core: %s\n", strerror(err));
         goto out;
     }
 
@@ -54,7 +54,7 @@ struct RKISP1Thread* RKISP1_3A_THREAD_CREATE(struct rkisp1_params* params)
     pthread_mutex_init(&rkisp1_thread->result_mutex, NULL);
     err = pthread_create(&rkisp1_thread->tid, NULL, rkisp1_thread_entry, rkisp1_thread);
     if (err) {
-        printf("RKISP1: can't create thread: %s\n", strerror(err));
+        fprintf(stderr, "RKISP1: can't create thread: %s\n", strerror(err));
         goto out;
     }
 
@@ -85,7 +85,7 @@ void RKISP1_3A_THREAD_EXIT(struct RKISP1Thread* rkisp1_thread)
     while (rkisp1_thread->status != EXITED_STATUS) {
         gettimeofday(&now, NULL);
         if (now.tv_sec - start.tv_sec > 2) {
-            printf("RKISP1: Timed out waiting for thread to exit.\n");
+            fprintf(stderr, "RKISP1: Timed out waiting for thread to exit.\n");
             pthread_cancel(rkisp1_thread->tid);
             rkisp1_3a_core_deinit(rkisp1_thread->rkisp1_core);
             break;
@@ -139,7 +139,7 @@ void RKISP1_3A_THREAD_STOP(struct RKISP1Thread* rkisp1_thread)
     while (rkisp1_thread->status != READY_STATUS) {
         gettimeofday(&now, NULL);
         if (now.tv_sec - start.tv_sec > 2) {
-            printf("RKISP1: Timed out waiting for thread to stop.\n");
+            fprintf(stderr, "RKISP1: Timed out waiting for thread to stop.\n");
             break;
         }
     }
