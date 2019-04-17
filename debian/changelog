@@ -1,3 +1,10 @@
+gstreamer1.0-rockchip-extra (20190116-1) UNRELEASED; urgency=medium
+
+  * rkcamsrc: ISP mode 1A
+  * rkcamsrc: Cleaned stdout
+
+ -- Cristian Klein <cristian@kleinlabs.eu>  Wed, 16 Jan 2019 12:04:48 +0100
+
 gstreamer1.0-rockchip-extra (20180115-1) UNRELEASED; urgency=medium
 
   * rkcamsrc: add AE/AWB support
